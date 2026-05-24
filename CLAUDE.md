@@ -19,6 +19,20 @@ Rules:
 - New behavior goes behind a new API surface or an explicit version branch — never a silent change to existing code paths.
 - If you can't prove replay-compat, assume it's broken and bump the major.
 
+## Terminology
+
+Everything user-facing in this repo is a **primitive** — a self-contained, replay-safe building block a workflow author imports and uses. Every primitive gets a spec doc at `docs/patterns/<name>.md` and is listed in [`docs/patterns/CATALOG.md`](docs/patterns/CATALOG.md). Specs scale with complexity: `saga` warrants 400 lines, `deadliner` might warrant 50. Same shape, different length.
+
+The only thing that does NOT get a spec is something genuinely internal — a private helper inside a primitive's source that isn't exported. Those live by doc-comment.
+
+**Packages** (layout, not status):
+- `packages/ts/core/` — `@signus/temporal-kit-core`. Foundational primitives that other primitives depend on (e.g., `workflow-mutex`, `deadliner`, `interruptible-scope`).
+- `packages/ts/patterns/` — `@signus/temporal-kit-patterns`. Composite primitives that structure a whole workflow (e.g., `saga`, `fsm`, `approval-gate`).
+- `packages/ts/testing/` — `@signus/temporal-kit-testing`. Replay test harness, fixture loaders, observability primitives.
+- `packages/ts/examples/` — `@signus/temporal-kit-examples`. Example workflows. Private, not published.
+
+The `core/` vs. `patterns/` split is about dependency depth, not importance — both are equally first-class to users. The rule is one-way: a `core/` primitive must not depend on a `patterns/` primitive.
+
 ## Working process
 
 ### Spec-first rule
