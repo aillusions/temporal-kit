@@ -66,6 +66,13 @@ Every primitive runs inside Temporal's deterministic replay. Behavior changes ca
 
 Full policy in [CLAUDE.md](./CLAUDE.md).
 
-## Contributing
+## For contributors and agents
 
-Contribution guide TBD. In the meantime: specs land in `docs/patterns/` before code, and replay fixtures are not optional. See [CLAUDE.md](./CLAUDE.md) for the working rules.
+Two entry points, in order:
+
+1. **[CLAUDE.md](./CLAUDE.md)** — scope, rules, working process, definition of done. Read first.
+2. **[docs/PROGRESS.md](./docs/PROGRESS.md)** — what's active, what's recently shipped, what's up next.
+
+Pattern-level status lives in [`docs/patterns/CATALOG.md`](./docs/patterns/CATALOG.md). Pattern-level design (and open questions) lives in `docs/patterns/<name>.md`.
+
+Hard rules: specs land in `docs/patterns/` before any code, replay fixtures are not optional, one pattern per PR (`pattern/<name>` branch).

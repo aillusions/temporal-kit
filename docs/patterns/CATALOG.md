@@ -1,6 +1,6 @@
 # Pattern Catalog
 
-The full list of primitives planned for temporal-kit. Each entry will get its own spec doc (`docs/patterns/<name>.md`) before implementation.
+The full list of primitives planned for temporal-kit. Each entry gets its own spec doc (`docs/patterns/<name>.md`) before implementation. This file is the **single source of truth for pattern status**. For what is in motion right now, see [`../PROGRESS.md`](../PROGRESS.md).
 
 Status legend:
 - `planned` — agreed, not started
@@ -15,7 +15,7 @@ Status legend:
 
 ### saga
 Forward steps with paired compensations. On failure, run compensations in reverse order. Workflow body becomes `saga([step1, step2, step3])`.
-Status: planned
+Status: spec — see [`saga.md`](saga.md)
 
 ### two-phase-commit
 Coordinate prepare-then-commit across multiple child workflows. Abort all on any prepare failure.

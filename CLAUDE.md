@@ -19,15 +19,40 @@ Rules:
 - New behavior goes behind a new API surface or an explicit version branch — never a silent change to existing code paths.
 - If you can't prove replay-compat, assume it's broken and bump the major.
 
-## Spec-first workflow
+## Working process
 
-New primitives start as a doc, not code:
+### Spec-first rule
 
-1. Write `docs/patterns/<name>.md` describing: states, guarantees, API surface, replay-safety notes, failure modes.
-2. Review the spec.
-3. Then implement in `packages/ts/...`.
+Every new primitive starts as `docs/patterns/<name>.md` and is reviewed before any code lands. No exceptions. `docs/patterns/` is the source of truth and language-agnostic — it's what keeps the future Go port honest. If the TS impl drifts from the spec, the spec wins or the spec gets updated; the impl is never the canonical reference.
 
-`docs/patterns/` is the source of truth and language-agnostic — it's what keeps the future Go port honest. If the TS impl drifts from the spec, the spec wins or the spec gets updated; the impl is never the canonical reference.
+### Pipeline per primitive
+
+1. **Spec draft** — `docs/patterns/<name>.md` per the template in [`docs/patterns/README.md`](docs/patterns/README.md). Lands in its own PR; no implementation in the same PR.
+2. **Spec review** — at least one human reviewer signs off. Open questions in the spec are explicit; nothing decided silently.
+3. **Implementation** — source under `packages/ts/patterns/src/<name>/`.
+4. **Tests** — unit tests for the state machine; replay tests against committed history fixtures.
+5. **Fixtures** — record at least one history per major branch in the state machine (happy path, failure/compensation, cancel, partial failure where applicable).
+6. **Per-pattern README** — usage, upgrade-vs-drain note, link back to the spec.
+7. **Catalog status update** — `docs/patterns/CATALOG.md` flipped to `released`.
+8. **CHANGELOG entry** — under the version that ships it.
+
+### Where state lives
+
+- **`docs/patterns/CATALOG.md`** — single source of truth for every primitive's status (`planned` / `spec` / `impl` / `released` / `deferred`).
+- **`docs/patterns/<name>.md`** — pattern-local design notes and open questions.
+- **`docs/PROGRESS.md`** — active work, recently completed, what's up next.
+- **`docs/adr/`** — cross-cutting decisions (repo conventions, versioning policy, cross-language rules). Pattern-local decisions stay in the pattern spec.
+
+### Branching and PRs
+
+- One primitive per PR. Mixing primitives in a single PR is a smell.
+- Branch name: `pattern/<name>` (e.g., `pattern/saga`, `pattern/poll-until`).
+- Commit prefixes signal the pipeline stage: `spec(saga): ...`, `impl(saga): ...`, `tests(saga): ...`, `docs(saga): ...`.
+
+### Where decisions get recorded
+
+- **Repo-wide:** `docs/adr/NNNN-<slug>.md` (numbered ADRs).
+- **Pattern-local:** the pattern's spec doc — specifically its Open Questions section. Resolved questions move out of "Open Questions" into the relevant body section above.
 
 ## Layout
 
@@ -84,3 +109,27 @@ The spec is the contract; the implementation is idiomatic.
 - `@temporalio/workflow` is a **peer dependency**. Never pin the SDK version for consumers — they choose.
 - Avoid runtime deps in `core` and `patterns` packages unless there's a strong reason. Replay safety is easier with fewer moving parts.
 - `testing` and `examples` packages can be looser.
+
+## How to resume work
+
+Read these in order before making any changes:
+
+1. **`CLAUDE.md`** (this file) — scope, rules, process.
+2. **`docs/PROGRESS.md`** — what's active, what was recently completed, what's up next.
+3. **For the active pattern: `docs/patterns/<name>.md`** — the spec, including its Open Questions section.
+4. **`docs/patterns/CATALOG.md`** — status of related patterns this work may depend on.
+5. **`git log --oneline pattern/<name>`** (if the branch exists) — in-progress commits.
+6. **Confirm the next concrete action with the human before editing.** If `PROGRESS.md` and the spec disagree, ask before assuming.
+
+## Definition of done
+
+A primitive transitions from `impl` to `released` only when ALL of the following hold:
+
+- Spec doc (`docs/patterns/<name>.md`) has no unresolved open questions.
+- Implementation matches the spec; any deviation is reflected in the spec, not the other way around.
+- Unit tests pass.
+- Replay tests pass against committed fixtures in `fixtures/`.
+- Per-pattern `README.md` exists with usage and the upgrade-vs-drain declaration.
+- `docs/patterns/CATALOG.md` status updated to `released`.
+- `CHANGELOG.md` entry added under the matching version.
+- Public API surface reviewed for replay-safety implications. Any removed or signature-changed export triggers a major bump.
