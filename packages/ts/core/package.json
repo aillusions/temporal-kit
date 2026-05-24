@@ -1,0 +1,23 @@
+{
+  "name": "@signus/temporal-kit-core",
+  "version": "0.0.0",
+  "description": "Shared low-level primitives for temporal-kit.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "tsc -b",
+    "test": "vitest run --passWithNoTests",
+    "lint": "eslint src"
+  },
+  "peerDependencies": {
+    "@temporalio/workflow": ">=1.10.0"
+  }
+}

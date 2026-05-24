@@ -1,0 +1,26 @@
+{
+  "name": "@signus/temporal-kit-patterns",
+  "version": "0.0.0",
+  "description": "Workflow patterns (sagas, approval gates, pollUntil, FSMs, ...) for Temporal.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "tsc -b",
+    "test": "vitest run --passWithNoTests",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@signus/temporal-kit-core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@temporalio/workflow": ">=1.10.0"
+  }
+}

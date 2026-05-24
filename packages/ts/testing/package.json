@@ -1,0 +1,27 @@
+{
+  "name": "@signus/temporal-kit-testing",
+  "version": "0.0.0",
+  "description": "Replay test harness and fixture loaders for temporal-kit primitives.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "tsc -b",
+    "test": "vitest run --passWithNoTests",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@signus/temporal-kit-core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@temporalio/workflow": ">=1.10.0",
+    "@temporalio/worker": ">=1.10.0"
+  }
+}

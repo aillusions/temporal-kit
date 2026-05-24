@@ -1,0 +1,9 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/ts/core" },
+    { "path": "packages/ts/patterns" },
+    { "path": "packages/ts/testing" },
+    { "path": "packages/ts/examples" }
+  ]
+}
